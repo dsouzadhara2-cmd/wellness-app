@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellness Premium+</title>
+
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f6f7fb;
+    text-align: center;
+}
+
+.container {
+    padding: 10px;
+}
+
+h1 {
+    font-size: 18px;
+    color: #6a5acd;
+}
+
+.exercise {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 8px;
+}
+
+.timer {
+    font-size: 42px;
+    color: #ff6f91;
+}
+
+.progress {
+    margin: 5px;
+    font-size: 14px;
+}
+
+.bar {
+    width: 90%;
+    height: 10px;
+    background: #ddd;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.fill {
+    height: 10px;
+    width: 0%;
+    background: #6a5acd;
+    border-radius: 10px;
+}
+
+button {
+    width: 90%;
+    padding: 12px;
+    margin: 5px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+}
+
+.start { background: #a0e7e5; }
+.pause { background: #ffc75f; }
+.next { background: #b5ead7; }
+.reset { background: #ffaaa5; }
+.endex { background: #ff8b94; }
+.endall { background: #ff4d6d; color: white; }
+.video { background: #d5aaff; }
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 id="part"></h1>
+<div class="exercise" id="exercise"></div>
+<div class="timer" id="timer"></div>
+<div class="progress" id="progress"></div>
+
+<div class="bar"><div class="fill" id="fill"></div></div>
+
+<button class="start" onclick="start()">Start</button>
+<button class="pause" onclick="pause()">Pause</button>
+<button class="next" onclick="next()">Next</button>
+<button class="endex" onclick="endExercise()">End Exercise</button>
+<button class="reset" onclick="reset()">Reset</button>
+<button class="endall" onclick="endWorkout()">End Workout</button>
+<button class="video" onclick="video()">Watch Video</button>
+
+</div>
+
+<script>
+
+let list = [
+
+/* PART 1 – Movement + Dumbbells */
+
+["March in place",60,"Part 1","https://www.youtube.com/watch?v=OAJ_J3EZkdY"],
+["Neck rotations",60,"Part 1","https://www.youtube.com/watch?v=2NOsE-VPpkE"],
+["Shoulder rolls",60,"Part 1","https://www.youtube.com/watch?v=6jHsraw2NIk"],
+["Arm swings",60,"Part 1","https://www.youtube.com/watch?v=ml6cT4AZdqI"],
+["Side bends",60,"Part 1","https://www.youtube.com/watch?v=7gZyR1eH2dE"],
+
+["Step-back squat",40,"Part 1","https://www.youtube.com/watch?v=aclHkVaku9U"],
+["Wall push-ups",40,"Part 1","https://www.youtube.com/watch?v=IODxDxX7oi4"],
+["Standing knee lift",60,"Part 1","https://www.youtube.com/watch?v=JB2oyawG9KI"],
+
+/* NEW DUMBBELL BLOCK */
+["Dumbbell Bicep Curl",40,"Part 1","https://www.youtube.com/watch?v=ykJmrZ5v0Oo"],
+["Dumbbell Shoulder Press",40,"Part 1","https://www.youtube.com/watch?v=qEwKCR5JCog"],
+["Dumbbell Deadlift",40,"Part 1","https://www.youtube.com/watch?v=ytGaGIn3SjE"],
+
+["Plank",15,"Part 1","https://www.youtube.com/watch?v=pSHjTRCQxIw"],
+["Relax standing",30,"Part 1","https://www.youtube.com/watch?v=inpok4MKVLM"],
+
+/* PART 2 – Sitting + Swelling Relief */
+
+["Vajrasana",120,"Part 2","https://www.youtube.com/watch?v=Fh6P7kFq3dU"],
+["Pawanmuktasana",60,"Part 2","https://www.youtube.com/watch?v=R8u8b4lQk9g"],
+["Spinal twist",60,"Part 2","https://www.youtube.com/watch?v=UuZJ9h7z8V0"],
+["Ankle rotation",30,"Part 2","https://www.youtube.com/watch?v=6s3d8QxP3Xc"],
+["Knee to chest",60,"Part 2","https://www.youtube.com/watch?v=3Prj9z6kG0Q"],
+
+/* NEW SWELLING EXERCISE */
+["Legs Up Wall (Swelling Relief)",90,"Part 2","https://www.youtube.com/watch?v=1VYlOKUdylM"],
+
+/* PART 3 – Pranayama */
+
+["Deep breathing",60,"Part 3","https://www.youtube.com/watch?v=inpok4MKVLM"],
+["Anulom Vilom",120,"Part 3","https://www.youtube.com/watch?v=8VwufJrUhic"],
+["Kapalbhati",60,"Part 3","https://www.youtube.com/watch?v=J8Kx9t6Zz1Q"],
+["Bhramari",60,"Part 3","https://www.youtube.com/watch?v=0BNejY1e9ik"],
+
+/* PART 4 – Mudras */
+
+["Apana Vayu",60,"Part 4","https://www.youtube.com/watch?v=2Cq4Sx9qz0U"],
+["Prana Mudra",60,"Part 4","https://www.youtube.com/watch?v=5M7X1p9y6nA"],
+["Varun Mudra",60,"Part 4","https://www.youtube.com/watch?v=JkF6H2p8J9A"],
+["Keshav Mudra",60,"Part 4","https://www.youtube.com/watch?v=Zk9nF2y5x3A"],
+["Gyan Mudra",60,"Part 4","https://www.youtube.com/watch?v=4pLUleLdwY4"],
+
+/* PART 5 – Face */
+
+["Eye movement",60,"Part 5","https://www.youtube.com/watch?v=V3h9xw9l9cA"],
+["Palming",30,"Part 5","https://www.youtube.com/watch?v=V3h9xw9l9cA"],
+["Ear massage",60,"Part 5","https://www.youtube.com/watch?v=6uV9gPzY2sM"],
+["Face yoga",60,"Part 5","https://www.youtube.com/watch?v=8o9r0pQkY2A"],
+
+/* PART 6 */
+
+["Shavasana",180,"Part 6","https://www.youtube.com/watch?v=1VYlOKUdylM"]
+
+];
+
+let i = 0;
+let time = list[i][1];
+let total = list.length;
+let timer;
+let running = false;
+
+function format(t){
+let m = Math.floor(t/60);
+let s = t%60;
+return (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+}
+
+function load(){
+let ex = list[i];
+document.getElementById("exercise").innerText = ex[0];
+document.getElementById("part").innerText = ex[2];
+document.getElementById("timer").innerText = format(ex[1]);
+document.getElementById("progress").innerText = (i+1)+" / "+total;
+
+time = ex[1];
+updateBar();
+}
+
+function updateBar(){
+let percent = ((list[i][1]-time)/list[i][1])*100;
+document.getElementById("fill").style.width = percent+"%";
+}
+
+function start(){
+if(running) return;
+running = true;
+
+timer = setInterval(()=>{
+time--;
+document.getElementById("timer").innerText = format(time);
+updateBar();
+
+if(time<=0){
+beep();
+next();
+}
+},1000);
+}
+
+function pause(){
+clearInterval(timer);
+running = false;
+}
+
+function next(){
+clearInterval(timer);
+running = false;
+i++;
+
+if(i>=total){
+finish("Workout Complete 🎉");
+return;
+}
+
+load();
+}
+
+function endExercise(){
+next();
+}
+
+function reset(){
+clearInterval(timer);
+running = false;
+i=0;
+load();
+}
+
+function endWorkout(){
+finish("Workout Stopped ❌");
+}
+
+function finish(msg){
+clearInterval(timer);
+document.getElementById("exercise").innerText = msg;
+document.getElementById("timer").innerText = "";
+document.getElementById("part").innerText = "";
+document.getElementById("progress").innerText = "";
+}
+
+function video(){
+window.open(list[i][3], "_blank");
+}
+
+function beep(){
+let audio = new Audio("https://www.soundjay.com/buttons/beep-01a.mp3");
+audio.play();
+}
+
+load();
+
+</script>
+
+</body>
+</html>
